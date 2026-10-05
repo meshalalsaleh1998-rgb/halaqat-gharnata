@@ -247,12 +247,25 @@
     .status-btn{ flex:1; text-align:center; }
   }
 </style>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Amiri:wght@400;700&display=swap">
+<style>
+  .splash .splash-title{ font-size:26px; font-weight:700; color:var(--ink); margin-top:4px; }
+  .ayah{ font-family:"Amiri","Traditional Arabic",serif; color:var(--accent); line-height:1.9; }
+  .splash .ayah{ font-size:24px; text-align:center; padding:0 20px; }
+  .ayah-ref{ font-size:11px; color:var(--ink-faint); }
+  header.top .brand .ayah{ display:block; font-size:15px; line-height:1.6; }
+  #toast{ position:fixed; bottom:16px; left:16px; right:16px; max-width:520px; margin:0 auto; z-index:400; background:var(--ink); color:var(--bg); border-radius:var(--radius-m); padding:12px 16px; font-size:13px; font-weight:600; box-shadow:var(--shadow-2); text-align:center; }
+</style>
 
 <div class="splash" id="splashScreen">
   <img id="splashLogo" alt="شعار حلقات جامع غرناطة">
+  <div class="splash-title">حلقات جامع غرناطة</div>
+  <div class="ayah">﴿وَلَقَدْ يَسَّرْنَا الْقُرْآنَ لِلذِّكْرِ فَهَلْ مِن مُّدَّكِرٍ﴾</div>
+  <div class="ayah-ref">[القمر: ١٧]</div>
   <div class="splash-hint">اضغط للمتابعة</div>
 </div>
+
+<div id="toast" hidden role="status"></div>
 
 <div class="wrap">
   <header class="top">
@@ -260,7 +273,7 @@
       <img class="logo-chip" id="headerLogo" alt="شعار حلقات جامع غرناطة">
       <span class="brand-text">
         <span class="org">حلقات جامع غرناطة</span>
-        <span class="title">متابعة الطلاب — الحفظ والحضور</span>
+        <span class="ayah">﴿وَلَقَدْ يَسَّرْنَا الْقُرْآنَ لِلذِّكْرِ فَهَلْ مِن مُّدَّكِرٍ﴾</span>
       </span>
     </div>
     <div class="whoami">
@@ -290,6 +303,7 @@
       </div>
       <div class="btnrow">
         <input type="date" class="dateInput" id="attDate">
+        <button class="btn ghost" id="btnAddStudentToday">+ إضافة طالب</button>
         <button class="btn primary" id="btnSaveToday">حفظ التسجيل</button>
       </div>
     </div>
@@ -687,14 +701,14 @@
     wrap.innerHTML = "";
     var list = activeStudents();
     if(!list.length){
-      wrap.appendChild(el("div",{class:"empty-note", text:"لا يوجد طلاب نشطون بعد — أضف طلابًا من تبويب «الطلاب»."}));
+      wrap.appendChild(el("div",{class:"empty-note", text:"لا يوجد طلاب نشطون بعد — اضغط «+ إضافة طالب» فوق."}));
       return;
     }
     list.forEach(function(s){ wrap.appendChild(buildAttRow(s)); });
   }
 
   document.getElementById("btnSaveToday").addEventListener("click", function(){
-    if(!state.db){ alert("لا يوجد اتصال بقاعدة البيانات."); return; }
+    if(!state.db){ toast("لا يوجد اتصال بقاعدة البيانات."); return; }
     var btn = this;
     var writes = [];
     Object.keys(state.draft).forEach(function(studentId){
@@ -715,7 +729,7 @@
       };
       writes.push(state.db.collection("attendance").doc(attKey(state.selectedDate, studentId)).set(data));
     });
-    if(!writes.length){ alert("ما فيه أي طالب معلّم عليه حالة حضور بعد."); return; }
+    if(!writes.length){ toast("ما فيه أي طالب معلّم عليه حالة حضور بعد."); return; }
     btn.disabled = true;
     Promise.all(writes).then(function(){
       btn.disabled = false;
@@ -723,7 +737,7 @@
       setTimeout(function(){ btn.textContent = "حفظ التسجيل"; }, 1500);
     }).catch(function(){
       btn.disabled = false;
-      alert("تعذّر حفظ بعض السجلات — حاول مرة أخرى.");
+      toast("تعذّر حفظ بعض السجلات — حاول مرة أخرى.");
     });
   });
 
@@ -780,8 +794,42 @@
     var editBtn = el("button",{class:"link-btn", type:"button", text:"تعديل"});
     editBtn.addEventListener("click", function(e){ e.stopPropagation(); openEditStudentModal(s.id); });
     actions.appendChild(editBtn);
+    var delBtn = el("button",{class:"btn danger sm", type:"button", text:"حذف الطالب"});
+    delBtn.addEventListener("click", function(e){ e.stopPropagation(); deleteStudent(s.id, delBtn); });
+    actions.appendChild(delBtn);
     wrap.appendChild(actions);
     return wrap;
+  }
+
+  /* delete straight from the student card (also used by the delete button inside the edit form) */
+  /* Two taps to delete — first tap arms the button, second (within 5 s) deletes. Browser confirm()
+     popups are silently blocked when the page runs embedded, which is why deleting did nothing. */
+  function deleteStudent(id, btn){
+    var s = state.students[id];
+    if(!s){ toast("الطالب غير موجود — حدّث الصفحة."); return; }
+    if(!state.db){ toast("لا يوجد اتصال بقاعدة البيانات."); return; }
+    if(btn && btn.getAttribute("data-armed") !== "1"){
+      var orig = btn.textContent;
+      btn.setAttribute("data-armed","1");
+      btn.textContent = "اضغط مرة ثانية لتأكيد حذف «" + (s.name || "") + "»";
+      setTimeout(function(){ if(btn.isConnected){ btn.removeAttribute("data-armed"); btn.textContent = orig; } }, 5000);
+      return;
+    }
+    if(btn){ btn.disabled = true; btn.textContent = "جارٍ الحذف…"; }
+    state.db.collection("students").doc(id).delete().then(function(){
+      if(state.expandedStudentId === id) state.expandedStudentId = null;
+      if(state.editingStudentId === id) studentOverlay.hidden = true;
+      toast("تم حذف الطالب «" + (s.name || "") + "». سجل حضوره السابق محفوظ.");
+      renderAll();
+    }).catch(function(err){
+      if(btn){ btn.disabled = false; btn.removeAttribute("data-armed"); btn.textContent = "حذف"; }
+      toast("تعذّر حذف الطالب" + (err && err.code ? " ("+err.code+")" : "") + " — حاول مرة أخرى.");
+    });
+  }
+  function toast(text){
+    var t = document.getElementById("toast");
+    t.textContent = text; t.hidden = false;
+    clearTimeout(toast._h); toast._h = setTimeout(function(){ t.hidden = true; }, 6000);
   }
 
   function buildStudentReportDetail(s){
@@ -940,14 +988,17 @@
     document.getElementById("studentModalTitle").textContent = "إضافة طالب جديد";
     document.getElementById("studentSaveBtn").textContent = "حفظ";
     document.getElementById("studentDeleteBtn").hidden = true;
+    var sdb = document.getElementById("studentDeleteBtn"); sdb.removeAttribute("data-armed"); sdb.disabled = false; sdb.textContent = "حذف";
     document.getElementById("sActive").checked = true;
     studentMsg.textContent = "";
     state.editingStudentId = null;
   }
 
-  document.getElementById("btnAddStudent").addEventListener("click", function(){
-    resetStudentForm();
-    studentOverlay.hidden = false;
+  ["btnAddStudent","btnAddStudentToday"].forEach(function(bid){
+    document.getElementById(bid).addEventListener("click", function(){
+      resetStudentForm();
+      studentOverlay.hidden = false;
+    });
   });
 
   function openEditStudentModal(id){
@@ -970,11 +1021,7 @@
   }
 
   document.getElementById("studentDeleteBtn").addEventListener("click", function(){
-    if(!state.editingStudentId || !state.db) return;
-    if(!confirm("حذف هذا الطالب نهائيًا؟ (سجل حضوره السابق يبقى محفوظًا)")) return;
-    state.db.collection("students").doc(state.editingStudentId).delete().then(function(){
-      studentOverlay.hidden = true;
-    }).catch(function(){ studentMsg.textContent = "تعذّر الحذف."; });
+    if(state.editingStudentId) deleteStudent(state.editingStudentId, this);
   });
 
   studentForm.addEventListener("submit", function(e){
