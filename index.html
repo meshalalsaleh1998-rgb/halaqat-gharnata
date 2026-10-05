@@ -1,0 +1,1135 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>حلقات جامع غرناطة</title>
+<style>
+  :root{
+    --bg:#F7F4EC;
+    --surface:#FFFFFF;
+    --surface-2:#EFEADA;
+    --border:#E0D8BE;
+    --ink:#22261E;
+    --ink-soft:#63684F;
+    --ink-faint:#94977E;
+    --accent:#0F6B4A;
+    --accent-ink:#FFFFFF;
+    --accent-soft:#DDEFE3;
+    --gold:#A97C2F;
+    --gold-soft:#F3E6C9;
+    --good:#1E8E5A;
+    --good-soft:#E1F2E6;
+    --warn:#B4791E;
+    --warn-soft:#FAEED7;
+    --danger:#B23B30;
+    --danger-soft:#F8E3E0;
+    --radius-s:8px;
+    --radius-m:14px;
+    --radius-l:20px;
+    --shadow-1:0 1px 2px rgba(34,38,30,.06), 0 1px 1px rgba(34,38,30,.04);
+    --shadow-2:0 8px 24px rgba(34,38,30,.10), 0 2px 6px rgba(34,38,30,.06);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#12190F; --surface:#182116; --surface-2:#1E2A19; --border:#2E3D26;
+      --ink:#EDF1E7; --ink-soft:#AFB89E; --ink-faint:#7C876C;
+      --accent:#4FBE8A; --accent-ink:#0A1A11; --accent-soft:#1B3226;
+      --gold:#DDB05C; --gold-soft:#392C15;
+      --good:#63CD93; --good-soft:#173A28;
+      --warn:#E4B056; --warn-soft:#3B2E13;
+      --danger:#E58A7B; --danger-soft:#3C201B;
+      --shadow-1:0 1px 2px rgba(0,0,0,.30); --shadow-2:0 10px 26px rgba(0,0,0,.42);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#12190F; --surface:#182116; --surface-2:#1E2A19; --border:#2E3D26;
+    --ink:#EDF1E7; --ink-soft:#AFB89E; --ink-faint:#7C876C;
+    --accent:#4FBE8A; --accent-ink:#0A1A11; --accent-soft:#1B3226;
+    --gold:#DDB05C; --gold-soft:#392C15;
+    --good:#63CD93; --good-soft:#173A28;
+    --warn:#E4B056; --warn-soft:#3B2E13;
+    --danger:#E58A7B; --danger-soft:#3C201B;
+    --shadow-1:0 1px 2px rgba(0,0,0,.30); --shadow-2:0 10px 26px rgba(0,0,0,.42);
+  }
+
+  [hidden]{ display:none !important; }
+  img{ max-width:100%; }
+  *{box-sizing:border-box;}
+  body{
+    background:var(--bg); color:var(--ink); direction:rtl;
+    font-family:"IBM Plex Sans Arabic","Tajawal",system-ui,sans-serif;
+    font-variant-numeric:tabular-nums; padding-inline:16px; line-height:1.5; margin:0;
+  }
+  h1,h2,h3{ text-wrap:balance; margin:0; }
+  button{ font-family:inherit; }
+  .wrap{ max-width:1080px; margin-inline:auto; padding-block:18px 64px; }
+
+  header.top{
+    position:sticky; top:env(safe-area-inset-top,0px); z-index:20;
+    background:color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--border);
+    margin-inline:-16px; padding:12px 16px;
+    display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:10px;
+  }
+  header.top .brand{ display:flex; align-items:center; gap:10px; }
+  header.top .brand .org{ font-size:16px; font-weight:700; display:block; }
+  header.top .brand .title{ font-size:11.5px; color:var(--ink-faint); }
+  .logo-chip{
+    width:38px; height:38px; border-radius:10px; background:#fff; padding:3px;
+    border:1px solid var(--border); object-fit:contain; flex:0 0 auto; box-shadow:var(--shadow-1);
+  }
+
+  /* ---------- splash screen ---------- */
+  .splash{
+    position:fixed; inset:0; z-index:300; background:var(--bg);
+    display:flex; align-items:center; justify-content:center; flex-direction:column; gap:14px;
+    cursor:pointer; transition:opacity .5s ease; opacity:1;
+  }
+  .splash.hide{ opacity:0; pointer-events:none; }
+  .splash img{
+    width:min(46vw,220px); height:min(46vw,220px); object-fit:contain; border-radius:24px;
+    background:#fff; padding:14px; box-shadow:var(--shadow-2); border:1px solid var(--border);
+  }
+  .splash .splash-hint{ font-size:12px; color:var(--ink-faint); }
+  .whoami{ display:flex; align-items:center; gap:6px; }
+  .whoami label{ font-size:11px; color:var(--ink-faint); }
+  .whoami input{
+    border:1px solid var(--border); background:var(--surface); color:var(--ink);
+    border-radius:999px; padding:6px 12px; font-size:12px; width:140px;
+  }
+
+  .tabs{ display:flex; gap:8px; flex-wrap:wrap; margin:16px 0 20px; }
+  .tab{
+    border:1px solid var(--border); background:var(--surface); border-radius:999px; padding:9px 18px;
+    font-size:13px; font-weight:700; color:var(--ink-soft); cursor:pointer;
+  }
+  .tab.active{ background:var(--accent); border-color:var(--accent); color:var(--accent-ink); }
+
+  .stats{ display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:10px; margin-bottom:18px; }
+  .stat{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-m);
+    padding:12px 14px; box-shadow:var(--shadow-1);
+  }
+  .stat .k{ font-size:11px; color:var(--ink-faint); font-weight:600; }
+  .stat .v{ font-size:19px; font-weight:700; margin-top:3px; }
+  .stat .v.good{ color:var(--good); }
+  .stat .v.warn{ color:var(--warn); }
+  .stat .v.gold{ color:var(--gold); }
+
+  .section-head{ display:flex; justify-content:space-between; align-items:flex-end; gap:12px; margin:6px 0 12px; flex-wrap:wrap; }
+  .section-head h2{ font-size:17px; font-weight:700; }
+  .section-head .sub{ font-size:12px; color:var(--ink-faint); margin-top:2px; }
+  .btnrow{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+
+  .btn{
+    border:none; border-radius:999px; padding:9px 16px; font-size:12.5px; font-weight:700;
+    cursor:pointer; display:inline-flex; align-items:center; gap:6px; white-space:nowrap;
+  }
+  .btn.primary{ background:var(--accent); color:var(--accent-ink); }
+  .btn.gold{ background:var(--gold); color:#fff; }
+  .btn.ghost{ background:var(--surface-2); color:var(--ink-soft); }
+  .btn.danger{ background:var(--danger-soft); color:var(--danger); }
+  .btn.sm{ padding:6px 12px; font-size:11.5px; }
+  .btn:disabled{ opacity:.5; cursor:default; }
+  .link-btn{
+    background:none; border:none; color:var(--accent); font-size:11px; font-weight:700;
+    cursor:pointer; padding:6px 0 0; text-decoration:underline; text-underline-offset:2px;
+  }
+  .link-btn.danger-link{ color:var(--danger); }
+
+  input.dateInput{
+    border:1px solid var(--border); background:var(--surface); color:var(--ink);
+    border-radius:var(--radius-s); padding:8px 12px; font-size:13px;
+  }
+  input.search{
+    border:1px solid var(--border); background:var(--surface); border-radius:999px; padding:8px 16px;
+    font-size:12.5px; color:var(--ink); min-width:180px; flex:1 1 180px;
+  }
+  input.search:focus-visible, .tab:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+
+  .empty-note{ font-size:12.5px; color:var(--ink-faint); padding:24px; text-align:center; }
+  .conn-note{
+    font-size:11.5px; color:var(--gold); background:var(--gold-soft); border-radius:var(--radius-s);
+    padding:8px 12px; margin-bottom:14px; display:none;
+  }
+
+  /* ---------- attendance rows (today view) ---------- */
+  .att-list{ display:flex; flex-direction:column; gap:8px; }
+  .att-row{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-m);
+    box-shadow:var(--shadow-1); padding:12px 14px;
+  }
+  .att-row .row-top{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .att-row .name{ font-size:13.5px; font-weight:700; flex:1 1 140px; min-width:120px; }
+  .att-row .level{ font-size:11px; color:var(--ink-faint); }
+  .status-switch{ display:inline-flex; border-radius:999px; overflow:hidden; border:1px solid var(--border); flex:0 0 auto; }
+  .status-btn{
+    border:none; background:var(--surface); color:var(--ink-soft); font-size:11.5px; font-weight:700;
+    padding:7px 12px; cursor:pointer; white-space:nowrap;
+  }
+  .status-btn.active[data-status="حاضر"]{ background:var(--good-soft); color:var(--good); }
+  .status-btn.active[data-status="متأخر"]{ background:var(--warn-soft); color:var(--warn); }
+  .status-btn.active[data-status="مستأذن"]{ background:var(--gold-soft); color:var(--gold); }
+  .status-btn.active[data-status="غائب"]{ background:var(--danger-soft); color:var(--danger); }
+  .att-row .progress-fields{ display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+  .att-row .progress-fields .field{ flex:1 1 150px; min-width:120px; }
+  .att-row .progress-fields label{ display:block; font-size:10.5px; color:var(--ink-faint); font-weight:700; margin-bottom:3px; }
+  .att-row input[type="text"], .att-row select, .att-row textarea{
+    width:100%; border:1px solid var(--border); background:var(--bg); color:var(--ink);
+    border-radius:var(--radius-s); padding:7px 10px; font-size:12.5px; font-family:inherit;
+  }
+
+  /* ---------- students list ---------- */
+  .student-list{ display:flex; flex-direction:column; gap:8px; }
+  .student-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-m);
+    box-shadow:var(--shadow-1); overflow:hidden;
+  }
+  .student-row{ display:flex; align-items:center; gap:12px; padding:12px 16px; cursor:pointer; flex-wrap:wrap; }
+  .student-row .body{ flex:1 1 220px; min-width:160px; }
+  .student-row .name{ font-size:13.5px; font-weight:700; }
+  .student-row .meta{ font-size:11.5px; color:var(--ink-faint); margin-top:3px; }
+  .student-row .badge-col{ display:flex; align-items:center; gap:8px; flex:0 0 auto; }
+  .badge{
+    display:inline-flex; align-items:center; font-size:11px; font-weight:700; border-radius:999px;
+    padding:3px 10px; white-space:nowrap;
+  }
+  .badge.good{ background:var(--good-soft); color:var(--good); }
+  .badge.neutral{ background:var(--surface-2); color:var(--ink-soft); }
+  .badge.danger{ background:var(--danger-soft); color:var(--danger); }
+  .chevron{ display:inline-block; transition:transform .15s; color:var(--ink-faint); font-size:12px; }
+  .chevron.open{ transform:rotate(180deg); }
+
+  .student-detail{ border-top:1px dashed var(--border); padding:14px 16px 16px; background:var(--surface-2); }
+  .detail-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:10px 16px; margin-bottom:12px; }
+  .detail-grid .k{ font-size:10.5px; color:var(--ink-faint); font-weight:700; text-transform:uppercase; letter-spacing:.02em; }
+  .detail-grid .v{ font-size:13px; font-weight:600; margin-top:2px; }
+  .detail-actions{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:12px; }
+
+  table.history{ width:100%; border-collapse:collapse; font-size:12.5px; }
+  table.history th, table.history td{ text-align:right; padding:7px 8px; border-bottom:1px solid var(--border); }
+  table.history th{ color:var(--ink-faint); font-weight:700; font-size:11px; }
+  table.history td.status-حاضر{ color:var(--good); font-weight:700; }
+  table.history td.status-متأخر{ color:var(--warn); font-weight:700; }
+  table.history td.status-مستأذن{ color:var(--gold); font-weight:700; }
+  table.history td.status-غائب{ color:var(--danger); font-weight:700; }
+
+  /* ---------- modal ---------- */
+  .overlay{
+    position:fixed; inset:0; background:rgba(18,25,15,.5); display:flex; align-items:center; justify-content:center;
+    padding:20px; z-index:100;
+  }
+  .overlay[hidden]{ display:none !important; }
+  .modal{
+    background:var(--surface); border-radius:var(--radius-l); box-shadow:var(--shadow-2);
+    width:100%; max-width:520px; max-height:88vh; overflow-y:auto; padding:20px;
+    border:1px solid var(--border);
+  }
+  .modal h3{ font-size:15.5px; font-weight:700; margin-bottom:14px; }
+  .field{ margin-bottom:12px; }
+  .field label{ display:block; font-size:12px; font-weight:600; color:var(--ink-soft); margin-bottom:5px; }
+  .field input, .field select, .field textarea{
+    width:100%; border:1px solid var(--border); background:var(--bg); color:var(--ink);
+    border-radius:var(--radius-s); padding:9px 11px; font-size:13px; font-family:inherit;
+  }
+  .field textarea{ resize:vertical; min-height:56px; }
+  .field-row{ display:flex; gap:10px; flex-wrap:wrap; }
+  .field-row .field{ flex:1 1 130px; min-width:0; }
+  .modal-actions{ display:flex; gap:8px; justify-content:flex-end; margin-top:16px; flex-wrap:wrap; }
+  .hint{ font-size:11px; color:var(--ink-faint); margin-top:6px; }
+  .form-msg{ font-size:12px; color:var(--danger); margin-top:6px; min-height:14px; }
+
+  @media (max-width:480px){
+    .att-row .row-top{ flex-direction:column; align-items:flex-start; }
+    .status-switch{ width:100%; }
+    .status-btn{ flex:1; text-align:center; }
+  }
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+
+<div class="splash" id="splashScreen">
+  <img id="splashLogo" alt="شعار حلقات جامع غرناطة">
+  <div class="splash-hint">اضغط للمتابعة</div>
+</div>
+
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <img class="logo-chip" id="headerLogo" alt="شعار حلقات جامع غرناطة">
+      <span class="brand-text">
+        <span class="org">حلقات جامع غرناطة</span>
+        <span class="title">متابعة الطلاب — الحفظ والحضور</span>
+      </span>
+    </div>
+    <div class="whoami">
+      <label for="meName">اسمك</label>
+      <input id="meName" placeholder="اسم المعلّم">
+    </div>
+  </header>
+
+  <div id="connNote" class="conn-note">تعذّر الاتصال بالخادم — البيانات المعروضة قد لا تكون محدّثة. أعد تحميل الصفحة بعد قليل.</div>
+
+  <div class="tabs">
+    <button class="tab active" data-view="today">تسجيل اليوم</button>
+    <button class="tab" data-view="students">الطلاب</button>
+    <button class="tab" data-view="reports">سجل الطالب</button>
+    <button class="tab" data-view="weekly">التقرير الأسبوعي</button>
+    <button class="tab" data-view="index">فهرس السور</button>
+  </div>
+
+  <div class="stats" id="mainStats"></div>
+
+  <!-- ===================== TODAY VIEW ===================== -->
+  <div id="viewToday">
+    <div class="section-head">
+      <div>
+        <h2>تسجيل الحضور والحفظ</h2>
+        <div class="sub" id="todaySub">اختر اليوم، وسجّل الحضور وما تم حفظه ومراجعته لكل طالب</div>
+      </div>
+      <div class="btnrow">
+        <input type="date" class="dateInput" id="attDate">
+        <button class="btn primary" id="btnSaveToday">حفظ التسجيل</button>
+      </div>
+    </div>
+    <div class="att-list" id="attList"></div>
+  </div>
+
+  <!-- ===================== STUDENTS VIEW ===================== -->
+  <div id="viewStudents" hidden>
+    <div class="section-head">
+      <div>
+        <h2>الطلاب</h2>
+        <div class="sub" id="studentsSub">قائمة طلاب الحلقة</div>
+      </div>
+      <div class="btnrow">
+        <input class="search" id="studentSearch" placeholder="ابحث باسم الطالب…">
+        <button class="btn primary" id="btnAddStudent">+ إضافة طالب</button>
+      </div>
+    </div>
+    <div class="student-list" id="studentList"></div>
+  </div>
+
+  <!-- ===================== REPORTS VIEW ===================== -->
+  <div id="viewReports" hidden>
+    <div class="section-head">
+      <div>
+        <h2>سجل الطالب</h2>
+        <div class="sub">اضغط على اسم الطالب لعرض سجل حضوره وحفظه بالكامل</div>
+      </div>
+      <div class="btnrow">
+        <input class="search" id="reportSearch" placeholder="ابحث باسم الطالب…">
+      </div>
+    </div>
+    <div class="student-list" id="reportList"></div>
+  </div>
+
+  <!-- ===================== WEEKLY REPORT VIEW ===================== -->
+  <div id="viewWeekly" hidden>
+    <div class="section-head">
+      <div>
+        <h2>التقرير الأسبوعي</h2>
+        <div class="sub" id="weeklySub">ملخص الحضور والغياب والتسميع لكل طالب خلال الفترة المحددة</div>
+      </div>
+      <div class="btnrow">
+        <input type="date" class="dateInput" id="weekFrom">
+        <span class="hint">إلى</span>
+        <input type="date" class="dateInput" id="weekTo">
+        <button class="btn ghost btn sm" id="btnThisWeek">هذا الأسبوع</button>
+      </div>
+    </div>
+    <div class="stats" id="weeklyStats"></div>
+    <div style="overflow-x:auto;">
+      <table class="history" id="weeklyTable"></table>
+    </div>
+  </div>
+
+  <!-- ===================== SURAH INDEX VIEW ===================== -->
+  <div id="viewIndex" hidden>
+    <div class="section-head">
+      <div>
+        <h2>فهرس السور</h2>
+        <div class="sub">أسماء السور الـ١١٤ ورقم بداية كل سورة في المصحف (طبعة المصحف المدني، ٦٠٤ صفحة)</div>
+      </div>
+      <div class="btnrow">
+        <input class="search" id="surahSearch" placeholder="ابحث باسم السورة…">
+      </div>
+    </div>
+    <table class="history" id="surahTable"></table>
+  </div>
+</div>
+
+<!-- ===================== STUDENT MODAL ===================== -->
+<div class="overlay" id="studentOverlay" hidden>
+  <div class="modal">
+    <h3 id="studentModalTitle">إضافة طالب جديد</h3>
+    <form id="studentForm">
+      <div class="field">
+        <label for="sName">اسم الطالب</label>
+        <input id="sName" type="text" required>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="sPhone">جوال الطالب (اختياري)</label>
+          <input id="sPhone" type="tel">
+        </div>
+        <div class="field">
+          <label for="sGuardianPhone">جوال ولي الأمر</label>
+          <input id="sGuardianPhone" type="tel" required>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="sLevel">الصف (اختياري)</label>
+          <input id="sLevel" type="text" placeholder="مثال: الصف الرابع الابتدائي">
+        </div>
+        <div class="field">
+          <label for="sJoinDate">تاريخ الالتحاق</label>
+          <input id="sJoinDate" type="date">
+        </div>
+      </div>
+      <div class="field">
+        <label for="sPosition">الموضع الحالي في الحفظ</label>
+        <input id="sPosition" type="text" list="surahList" placeholder="مثال: سورة النبأ">
+      </div>
+      <div class="field">
+        <label for="sNotes">ملاحظات (اختياري)</label>
+        <textarea id="sNotes"></textarea>
+      </div>
+      <div class="field">
+        <label><input type="checkbox" id="sActive" style="width:auto; display:inline-block;" checked> طالب نشط حاليًا</label>
+      </div>
+      <div class="form-msg" id="studentMsg"></div>
+      <div class="modal-actions">
+        <button type="button" class="btn danger" id="studentDeleteBtn" hidden>حذف</button>
+        <button type="button" class="btn ghost" data-close="studentOverlay">إلغاء</button>
+        <button type="submit" class="btn primary" id="studentSaveBtn">حفظ</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var LOGO_DATA_URI = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAASABIAAD/4QCMRXhpZgAATU0AKgAAAAgABQESAAMAAAABAAEAAAEaAAUAAAABAAAASgEbAAUAAAABAAAAUgEoAAMAAAABAAIAAIdpAAQAAAABAAAAWgAAAAAAAABIAAAAAQAAAEgAAAABAAOgAQADAAAAAQABAACgAgAEAAAAAQAAAoCgAwAEAAAAAQAAAoEAAAAA/+0AOFBob3Rvc2hvcCAzLjAAOEJJTQQEAAAAAAAAOEJJTQQlAAAAAAAQ1B2M2Y8AsgTpgAmY7PhCfv/AABEIAoECgAMBIgACEQEDEQH/xAAfAAABBQEBAQEBAQAAAAAAAAAAAQIDBAUGBwgJCgv/xAC1EAACAQMDAgQDBQUEBAAAAX0BAgMABBEFEiExQQYTUWEHInEUMoGRoQgjQrHBFVLR8CQzYnKCCQoWFxgZGiUmJygpKjQ1Njc4OTpDREVGR0hJSlNUVVZXWFlaY2RlZmdoaWpzdHV2d3h5eoOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4eLj5OXm5+jp6vHy8/T19vf4+fr/xAAfAQADAQEBAQEBAQEBAAAAAAAAAQIDBAUGBwgJCgv/xAC1EQACAQIEBAMEBwUEBAABAncAAQIDEQQFITEGEkFRB2FxEyIygQgUQpGhscEJIzNS8BVictEKFiQ04SXxFxgZGiYnKCkqNTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqCg4SFhoeIiYqSk5SVlpeYmZqio6Slpqeoqaqys7S1tre4ubrCw8TFxsfIycrS09TV1tfY2dri4+Tl5ufo6ery8/T19vf4+fr/2wBDAAYGBgYGBgoGBgoOCgoKDhIODg4OEhcSEhISEhccFxcXFxcXHBwcHBwcHBwiIiIiIiInJycnJywsLCwsLCwsLCz/2wBDAQcHBwsKCxMKChMuHxofLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi7/3QAEACj/2gAMAwEAAhEDEQA/APqmiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigD//Q+qaKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKAP/9H6pooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooA//0vqmiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigD//T+qaKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKAP/9T6pooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooA//1fqmiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigD//W+qaKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKAP/9f6pooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooA//0PqmiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigD//R+qaKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKAP/9L6pooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooA//0/qmiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigD//U+qaKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACijNJmgBTSVBc3UFrEZZ3CKO5rg77xXO04+xALGp79WrGrXjT+I0hTlLY9DpawtL1u11JQAdkuOUP9K3M1pCakrxIlFp2YtFGaKoQUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFAH/1fqmiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKTNAC0hqtdXUNnEZp22qK4PUPFdzKTHZDy16bjyxrGrXhT+I0hSlPY76a4ht13zOEHqTiuX1DxXbQgpZDzW9Two/xrlYtP1jVG8wq7A/xOcD9a6Ox8JRJh7595/urwK5XWrVP4cbG3s6cPjdzmidU1yfvIfToq/0rrLLwraRwEXh3yMOo6L9K6iC2gt0EcCBFHYCp8CtKeEivenqyJ129I6I8t1HQb7TX86DLxjkMvUfWrmneKriDEV6PNUcbv4h/jXopUEYPNc/qHh2wvSXA8pz3X+oqJYaUHzUWUq0ZK1RF+01awvR+4lBP908H8jWjmvMbrwzqVqd8H71R3Xg/lUNtrWq6a/luSQOqyChYuUNKsQdBPWDPVaWsHSddttT+T7ko6qe/wBK3a7YTUleLOeUWnZi0UUVQgooooAKKKKACiiigAooooAKKKKA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2V7fU161pGhaZoluILCIL/eY8s31NK5pTpt/DojgfD/w7VZBf+In8+ZufLzkA/7R716W72thBltsUSDgDgADsBViTesZMQBbHAPTNea31tr2pXRW4ibrwP4BXNXrOC0V2d1ChHbYs6r4nluMwWGUToW7n6elV9L8O3N+RPdZjjPPP3mrpNJ8N29nia5xLL+g+ldQAOlc8MNKo+et9xvKqorlplW0srayiEVugUD8zVwUYFFdySWiOZu+4UUUUwCiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigD/9f6pooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKAEopaKAErlfE/ia38OWyuyGWaU4jjHf6+1dVXnviPS9ZvdXifTIY8lMfaZeRF67V9femiKjaXunBXeo+PNUuEvV3W4B3Rxh1jz9FJy1alt4o0jXozpPjGARTL8omxjB6c91P6V0E2n6L4OtG1fUXN3en7rynLFvRR2rwm7uZLy6lu5fvysWP41W5xzbhuz0ufQfEHhOT+0/DsxubQ/MdvPH+0vf6iuq0v4k6RPaM+pg286DlQCQ30/wNeYeGfEuuaVcLbWAa5RzjyDlgfp6V69ceDNH10w6je2zWkxw0kaEAH2bFJ+ZdNt/wAM4m71/wAS+NJjY6HE0FtnDEHHH+039BVxLDwv4ITztTcXuoYyEHOD9O31NSeL9b1Tw9GNL0m0+xW2MCZRnd9COB+PNeOSSyTOZZWLu3JJOSaaRnOfK9dWei3Ot+MfEDrf2RNvArYjVXWMZHb5iNxrrNC8b38V5FpHiWAxSuQqy4xnPTI6H6iuf8FahpOp2X/CM60ikZLQs3HJ6gHsfSty/wDCmrWG2KwI1GzLDEMx/eR+6N7Ui4OVudM9Y60tQW6skKI5JIUA565qxUnaJRS0UAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAf/0PqmiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKTIpaildY0MjnCqCSfQCgB9cP4j8caXoitBCwuLodEU8A/7Rry3xJ461XU55bWzk8m1DELs4ZgO5Ncvpei6nrlx5NjEZDn5nP3R7k1SXc5J4i/uwG6trF/rV0bu+kLseg/hUegFdF4e8D6rrZWeVTb2x/jYckf7Ir07w78PtO0orc32Lm4HPzfcU+w7/jXoiqFAAGAKGxQw19ZmBofhvStCi2WUQ3n70jcsfxroMCilqTrSSVkV7i2t7qJoLmNZEbgqwyDXkPiL4a53XWgnB6mBjx/wE/0r2amkZFNMmdNTVmfIE9vdWFwYbhGhlQ9DwQa9S8L/EVrdUsddJZBws3Vh/vev1r1HWfDmma7D5V9EC38Ljhl+hrw/wAR+A9T0YtPag3NsOdyj5lHuBVXucjpzpPmifQdrdW15CtxayLJGw4ZTkVar5N0rXdU0WXzNPmZPVTyp+or6L8Ka+PEGlrdvhZlO2RR0DD/ABpNG9Kup6dTqKKKKk3CiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKAP/9H6pooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACuM8cyakuhSRaZE0jykI23qFPXiuzpMCgmUbqx4f4c+G0022610mNOohU/Mf949q9ksrC00+BbazjWKNegUYq5gUtNsmFOMNhOlLRRSNAooooAKKKKACmEA5zT6KAPPvEfgHTNXDXFmBbXPXKj5WP+0P61y3gvTNf8P6/JYXUDeRIp3MD8nHRga9pwKNop3MnRjfmQDpS0UUjUKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooA//S+qaKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKAP/9P6pooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooA//1PqmiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigD//V+qaKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKAP/9b6pooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooA//1/qmiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigD//Q+qaKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKAP/9H6pooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooA//0vqmiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigD//T+qaKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKAP/9T6pooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooA//1fqmiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigD//W+qaKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKAP/9f6pooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooA//2Q==";
+
+  var state = {
+    students:{}, attendance:{}, db:null, meName:"",
+    activeView:"today", editingStudentId:null,
+    studentSearch:"", reportSearch:"", expandedStudentId:null,
+    selectedDate: todayISO(),
+    draft:{} // studentId -> {status, hifdh, muraja, rating, notes}
+  };
+
+  function el(tag, attrs, children){
+    var e = document.createElement(tag);
+    if(attrs) for(var k in attrs){
+      if(k==="class") e.className = attrs[k];
+      else if(k==="html") e.innerHTML = attrs[k];
+      else if(k==="text") e.textContent = attrs[k];
+      else e.setAttribute(k, attrs[k]);
+    }
+    (children||[]).forEach(function(c){ if(c) e.appendChild(c); });
+    return e;
+  }
+  document.getElementById("headerLogo").src = LOGO_DATA_URI;
+  document.getElementById("splashLogo").src = LOGO_DATA_URI;
+  (function(){
+    var splash = document.getElementById("splashScreen");
+    var dismissed = false;
+    function dismissSplash(){
+      if(dismissed) return;
+      dismissed = true;
+      splash.classList.add("hide");
+      setTimeout(function(){ splash.hidden = true; }, 550);
+    }
+    splash.addEventListener("click", dismissSplash);
+    setTimeout(dismissSplash, 1600);
+  })();
+
+  function nowIso(){ return new Date().toISOString(); }
+  function todayISO(){
+    var d = new Date();
+    var tzOff = d.getTimezoneOffset()*60000;
+    return new Date(d - tzOff).toISOString().slice(0,10);
+  }
+  var GREG_MONTHS=["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
+  var DAY_NAMES=["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
+  function fmtDateLong(iso){
+    if(!iso) return "";
+    var p = iso.split("-");
+    if(p.length!==3) return iso;
+    var y=+p[0], m=+p[1], d=+p[2];
+    var dow = new Date(Date.UTC(y,m-1,d)).getUTCDay();
+    return (DAY_NAMES[dow]||"") + "، " + d + " " + (GREG_MONTHS[m-1]||"") + " " + y;
+  }
+  function isoFromDate(d){
+    var tzOff = d.getTimezoneOffset()*60000;
+    return new Date(d - tzOff).toISOString().slice(0,10);
+  }
+  function currentWeekRange(){
+    var d = new Date();
+    var dow = d.getDay(); /* 0=الأحد */
+    var sunday = new Date(d);
+    sunday.setDate(d.getDate() - dow);
+    var saturday = new Date(sunday);
+    saturday.setDate(sunday.getDate() + 6);
+    return { from: isoFromDate(sunday), to: isoFromDate(saturday) };
+  }
+
+  /* فهرس السور الـ١١٤ مع رقم أول صفحة لكل سورة، حسب طبعة المصحف المدني الشائعة (٦٠٤ صفحة). */
+  var SURAHS = [
+    {n:1,name:"الفاتحة",page:1},{n:2,name:"البقرة",page:2},{n:3,name:"آل عمران",page:50},
+    {n:4,name:"النساء",page:77},{n:5,name:"المائدة",page:106},{n:6,name:"الأنعام",page:128},
+    {n:7,name:"الأعراف",page:151},{n:8,name:"الأنفال",page:177},{n:9,name:"التوبة",page:187},
+    {n:10,name:"يونس",page:208},{n:11,name:"هود",page:221},{n:12,name:"يوسف",page:235},
+    {n:13,name:"الرعد",page:249},{n:14,name:"إبراهيم",page:255},{n:15,name:"الحجر",page:262},
+    {n:16,name:"النحل",page:267},{n:17,name:"الإسراء",page:282},{n:18,name:"الكهف",page:293},
+    {n:19,name:"مريم",page:305},{n:20,name:"طه",page:312},{n:21,name:"الأنبياء",page:322},
+    {n:22,name:"الحج",page:332},{n:23,name:"المؤمنون",page:342},{n:24,name:"النور",page:350},
+    {n:25,name:"الفرقان",page:359},{n:26,name:"الشعراء",page:367},{n:27,name:"النمل",page:377},
+    {n:28,name:"القصص",page:385},{n:29,name:"العنكبوت",page:396},{n:30,name:"الروم",page:404},
+    {n:31,name:"لقمان",page:411},{n:32,name:"السجدة",page:415},{n:33,name:"الأحزاب",page:418},
+    {n:34,name:"سبأ",page:428},{n:35,name:"فاطر",page:434},{n:36,name:"يس",page:440},
+    {n:37,name:"الصافات",page:446},{n:38,name:"ص",page:453},{n:39,name:"الزمر",page:458},
+    {n:40,name:"غافر",page:467},{n:41,name:"فصلت",page:477},{n:42,name:"الشورى",page:483},
+    {n:43,name:"الزخرف",page:489},{n:44,name:"الدخان",page:496},{n:45,name:"الجاثية",page:499},
+    {n:46,name:"الأحقاف",page:502},{n:47,name:"محمد",page:507},{n:48,name:"الفتح",page:511},
+    {n:49,name:"الحجرات",page:515},{n:50,name:"ق",page:518},{n:51,name:"الذاريات",page:520},
+    {n:52,name:"الطور",page:523},{n:53,name:"النجم",page:526},{n:54,name:"القمر",page:528},
+    {n:55,name:"الرحمن",page:531},{n:56,name:"الواقعة",page:534},{n:57,name:"الحديد",page:537},
+    {n:58,name:"المجادلة",page:542},{n:59,name:"الحشر",page:545},{n:60,name:"الممتحنة",page:549},
+    {n:61,name:"الصف",page:551},{n:62,name:"الجمعة",page:553},{n:63,name:"المنافقون",page:554},
+    {n:64,name:"التغابن",page:556},{n:65,name:"الطلاق",page:558},{n:66,name:"التحريم",page:560},
+    {n:67,name:"الملك",page:562},{n:68,name:"القلم",page:564},{n:69,name:"الحاقة",page:566},
+    {n:70,name:"المعارج",page:568},{n:71,name:"نوح",page:570},{n:72,name:"الجن",page:572},
+    {n:73,name:"المزمل",page:574},{n:74,name:"المدثر",page:575},{n:75,name:"القيامة",page:577},
+    {n:76,name:"الإنسان",page:578},{n:77,name:"المرسلات",page:580},{n:78,name:"النبأ",page:582},
+    {n:79,name:"النازعات",page:583},{n:80,name:"عبس",page:585},{n:81,name:"التكوير",page:586},
+    {n:82,name:"الانفطار",page:587},{n:83,name:"المطففين",page:587},{n:84,name:"الانشقاق",page:589},
+    {n:85,name:"البروج",page:590},{n:86,name:"الطارق",page:591},{n:87,name:"الأعلى",page:591},
+    {n:88,name:"الغاشية",page:592},{n:89,name:"الفجر",page:593},{n:90,name:"البلد",page:594},
+    {n:91,name:"الشمس",page:595},{n:92,name:"الليل",page:595},{n:93,name:"الضحى",page:596},
+    {n:94,name:"الشرح",page:596},{n:95,name:"التين",page:597},{n:96,name:"العلق",page:597},
+    {n:97,name:"القدر",page:598},{n:98,name:"البينة",page:598},{n:99,name:"الزلزلة",page:599},
+    {n:100,name:"العاديات",page:599},{n:101,name:"القارعة",page:600},{n:102,name:"التكاثر",page:600},
+    {n:103,name:"العصر",page:601},{n:104,name:"الهمزة",page:601},{n:105,name:"الفيل",page:601},
+    {n:106,name:"قريش",page:602},{n:107,name:"الماعون",page:602},{n:108,name:"الكوثر",page:602},
+    {n:109,name:"الكافرون",page:603},{n:110,name:"النصر",page:603},{n:111,name:"المسد",page:603},
+    {n:112,name:"الإخلاص",page:604},{n:113,name:"الفلق",page:604},{n:114,name:"الناس",page:604}
+  ];
+  function buildSurahDatalist(){
+    var dl = el("datalist",{id:"surahList"});
+    SURAHS.forEach(function(s){
+      dl.appendChild(el("option",{value:"سورة "+s.name, text:"صفحة "+s.page}));
+    });
+    document.body.appendChild(dl);
+  }
+  function renderSurahIndex(filterTerm){
+    var table = document.getElementById("surahTable");
+    table.innerHTML = "";
+    table.appendChild(el("tr",{},[
+      el("th",{text:"#"}), el("th",{text:"اسم السورة"}), el("th",{text:"رقم الصفحة"})
+    ]));
+    var list = SURAHS;
+    if(filterTerm){
+      list = list.filter(function(s){ return s.name.indexOf(filterTerm)>-1; });
+    }
+    list.forEach(function(s){
+      table.appendChild(el("tr",{},[
+        el("td",{text:String(s.n)}), el("td",{text:s.name}), el("td",{text:String(s.page)})
+      ]));
+    });
+  }
+
+  function loadMe(){
+    try{ var v = localStorage.getItem("granada_halaqa_me"); if(v) state.meName = v; }catch(e){}
+  }
+  function saveMe(v){
+    state.meName = v;
+    try{ localStorage.setItem("granada_halaqa_me", v); }catch(e){}
+  }
+
+  function attKey(date, studentId){ return date + "_" + studentId; }
+
+  function activeStudents(){
+    return Object.values(state.students).filter(function(s){ return s.active!==false; })
+      .sort(function(a,b){ return (a.name||"").localeCompare(b.name||"", "ar"); });
+  }
+  function allStudentsSorted(){
+    return Object.values(state.students).sort(function(a,b){ return (a.name||"").localeCompare(b.name||"", "ar"); });
+  }
+  function attendanceForStudent(studentId){
+    return Object.values(state.attendance)
+      .filter(function(a){ return a.studentId===studentId; })
+      .sort(function(a,b){ return (b.date||"").localeCompare(a.date||""); });
+  }
+
+  /* ---------------- tabs ---------------- */
+  function switchView(view){
+    state.activeView = view;
+    document.querySelectorAll(".tab").forEach(function(t){
+      t.classList.toggle("active", t.getAttribute("data-view")===view);
+    });
+    document.getElementById("viewToday").hidden = view!=="today";
+    document.getElementById("viewStudents").hidden = view!=="students";
+    document.getElementById("viewReports").hidden = view!=="reports";
+    document.getElementById("viewWeekly").hidden = view!=="weekly";
+    document.getElementById("viewIndex").hidden = view!=="index";
+    renderAll();
+  }
+  document.querySelectorAll(".tab").forEach(function(t){
+    t.addEventListener("click", function(){ switchView(t.getAttribute("data-view")); });
+  });
+
+  /* ---------------- stats ---------------- */
+  function statTile(k,v,cls){
+    return el("div",{class:"stat"},[el("div",{class:"k", text:k}), el("div",{class:"v "+(cls||""), text:v})]);
+  }
+  function renderStats(){
+    var wrap = document.getElementById("mainStats");
+    wrap.innerHTML = "";
+    var active = activeStudents();
+    var todaysRecords = Object.values(state.attendance).filter(function(a){ return a.date===state.selectedDate; });
+    var presentToday = todaysRecords.filter(function(a){ return a.status==="حاضر" || a.status==="متأخر"; }).length;
+    wrap.appendChild(statTile("عدد الطلاب النشطين", String(active.length)));
+    wrap.appendChild(statTile("الحضور اليوم", presentToday + " / " + active.length, presentToday? "good":""));
+    var absentToday = todaysRecords.filter(function(a){ return a.status==="غائب"; }).length;
+    wrap.appendChild(statTile("الغياب اليوم", String(absentToday), absentToday? "warn":""));
+  }
+
+  /* ================= TODAY VIEW ================= */
+  var attDateInput = document.getElementById("attDate");
+  attDateInput.value = state.selectedDate;
+  attDateInput.addEventListener("change", function(){
+    if(!this.value) return;
+    state.selectedDate = this.value;
+    loadDraftForDate();
+    renderAll();
+  });
+
+  function loadDraftForDate(){
+    state.draft = {};
+    activeStudents().forEach(function(s){
+      var existing = state.attendance[attKey(state.selectedDate, s.id)];
+      state.draft[s.id] = existing ? {
+        status: existing.status || null,
+        hifdh: existing.hifdh || "",
+        muraja: existing.muraja || "",
+        rating: existing.rating || "",
+        notes: existing.notes || ""
+      } : { status:null, hifdh:"", muraja:"", rating:"", notes:"" };
+    });
+  }
+
+  var STATUS_OPTIONS = ["حاضر","متأخر","مستأذن","غائب"];
+  function buildAttRow(s){
+    var d = state.draft[s.id] || (state.draft[s.id] = {status:null, hifdh:"", muraja:"", rating:"", notes:""});
+    var statusSwitch = el("div",{class:"status-switch"});
+    STATUS_OPTIONS.forEach(function(opt){
+      var btn = el("button",{type:"button", class:"status-btn"+(d.status===opt?" active":""), "data-status":opt, text:opt});
+      btn.addEventListener("click", function(){
+        d.status = (d.status===opt) ? null : opt;
+        renderTodayView();
+      });
+      statusSwitch.appendChild(btn);
+    });
+
+    var top = el("div",{class:"row-top"},[
+      el("div",{},[
+        el("div",{class:"name", text:s.name}),
+        s.level? el("div",{class:"level", text:s.level}) : null
+      ]),
+      statusSwitch
+    ]);
+
+    var row = el("div",{class:"att-row"},[top]);
+
+    if(d.status==="حاضر" || d.status==="متأخر"){
+      var hifdhField = el("div",{class:"field"},[
+        el("label",{text:"حفظ جديد"}),
+        el("input",{type:"text", value:d.hifdh, list:"surahList", placeholder:"مثال: سورة النبأ من 1 إلى 10"})
+      ]);
+      hifdhField.querySelector("input").addEventListener("input", function(){ d.hifdh = this.value; });
+
+      var murajaField = el("div",{class:"field"},[
+        el("label",{text:"مراجعة"}),
+        el("input",{type:"text", value:d.muraja, list:"surahList", placeholder:"مثال: سورة الملك"})
+      ]);
+      murajaField.querySelector("input").addEventListener("input", function(){ d.muraja = this.value; });
+
+      var ratingSel = el("select",{});
+      ["", "ممتاز", "جيد", "مقبول", "يحتاج متابعة"].forEach(function(opt){
+        var o = el("option",{value:opt, text: opt || "التقييم (اختياري)"});
+        if(d.rating===opt) o.setAttribute("selected","");
+        ratingSel.appendChild(o);
+      });
+      ratingSel.addEventListener("change", function(){ d.rating = this.value; });
+      var ratingField = el("div",{class:"field"},[ el("label",{text:"التقييم"}), ratingSel ]);
+
+      var notesField = el("div",{class:"field"},[
+        el("label",{text:"ملاحظة"}),
+        el("input",{type:"text", value:d.notes, placeholder:"اختياري"})
+      ]);
+      notesField.querySelector("input").addEventListener("input", function(){ d.notes = this.value; });
+
+      row.appendChild(el("div",{class:"progress-fields"},[hifdhField, murajaField, ratingField, notesField]));
+    }
+    return row;
+  }
+
+  function renderTodayView(){
+    document.getElementById("todaySub").textContent = fmtDateLong(state.selectedDate);
+    var wrap = document.getElementById("attList");
+    wrap.innerHTML = "";
+    var list = activeStudents();
+    if(!list.length){
+      wrap.appendChild(el("div",{class:"empty-note", text:"لا يوجد طلاب نشطون بعد — أضف طلابًا من تبويب «الطلاب»."}));
+      return;
+    }
+    list.forEach(function(s){ wrap.appendChild(buildAttRow(s)); });
+  }
+
+  document.getElementById("btnSaveToday").addEventListener("click", function(){
+    if(!state.db){ alert("لا يوجد اتصال بقاعدة البيانات."); return; }
+    var btn = this;
+    var writes = [];
+    Object.keys(state.draft).forEach(function(studentId){
+      var d = state.draft[studentId];
+      if(!d.status) return; // untouched row — nothing to save
+      var s = state.students[studentId];
+      var data = {
+        studentId: studentId,
+        studentName: s ? s.name : "",
+        date: state.selectedDate,
+        status: d.status,
+        hifdh: d.hifdh || null,
+        muraja: d.muraja || null,
+        rating: d.rating || null,
+        notes: d.notes || null,
+        recordedBy: state.meName || null,
+        updatedAt: nowIso()
+      };
+      writes.push(state.db.collection("attendance").doc(attKey(state.selectedDate, studentId)).set(data));
+    });
+    if(!writes.length){ alert("ما فيه أي طالب معلّم عليه حالة حضور بعد."); return; }
+    btn.disabled = true;
+    Promise.all(writes).then(function(){
+      btn.disabled = false;
+      btn.textContent = "تم الحفظ ✓";
+      setTimeout(function(){ btn.textContent = "حفظ التسجيل"; }, 1500);
+    }).catch(function(){
+      btn.disabled = false;
+      alert("تعذّر حفظ بعض السجلات — حاول مرة أخرى.");
+    });
+  });
+
+  /* ================= STUDENTS VIEW ================= */
+  function filteredStudents(){
+    var list = allStudentsSorted();
+    if(state.studentSearch){
+      var q = state.studentSearch;
+      list = list.filter(function(s){ return (s.name||"").toLowerCase().indexOf(q)>-1; });
+    }
+    return list;
+  }
+
+  function buildStudentCard(s, forReports){
+    var open = state.expandedStudentId===s.id;
+    var chevron = el("span",{class:"chevron"+(open?" open":""), text:"▾"});
+    var row = el("div",{class:"student-row"},[
+      el("div",{class:"body"},[
+        el("div",{class:"name"},[chevron, document.createTextNode(" "+s.name)]),
+        el("div",{class:"meta", text:(s.level? s.level+" — ":"") + (s.position || "لم يُسجَّل موضع الحفظ بعد")})
+      ]),
+      el("div",{class:"badge-col"},[
+        s.active===false ? el("span",{class:"badge danger", text:"غير نشط"}) : el("span",{class:"badge good", text:"نشط"})
+      ])
+    ]);
+    row.addEventListener("click", function(){
+      state.expandedStudentId = open ? null : s.id;
+      renderAll();
+    });
+
+    var children = [row];
+    if(open){
+      children.push(forReports ? buildStudentReportDetail(s) : buildStudentManageDetail(s));
+    }
+    return el("div",{class:"student-card"}, children);
+  }
+
+  function detailField(k,v){
+    if(!v) return null;
+    return el("div",{},[el("div",{class:"k", text:k}), el("div",{class:"v", text:v})]);
+  }
+
+  function buildStudentManageDetail(s){
+    var grid = el("div",{class:"detail-grid"},[
+      detailField("الصف", s.level),
+      detailField("جوال الطالب", s.phone),
+      detailField("جوال ولي الأمر", s.guardianPhone),
+      detailField("تاريخ الالتحاق", s.joinDate),
+      detailField("الموضع الحالي", s.position)
+    ]);
+    var wrap = el("div",{class:"student-detail"},[grid]);
+    if(s.notes) wrap.appendChild(el("div",{class:"hint", style:"margin-bottom:10px;", text:"ملاحظات: "+s.notes}));
+    var actions = el("div",{class:"detail-actions"});
+    var editBtn = el("button",{class:"link-btn", type:"button", text:"تعديل"});
+    editBtn.addEventListener("click", function(e){ e.stopPropagation(); openEditStudentModal(s.id); });
+    actions.appendChild(editBtn);
+    wrap.appendChild(actions);
+    return wrap;
+  }
+
+  function buildStudentReportDetail(s){
+    var history = attendanceForStudent(s.id);
+    var wrap = el("div",{class:"student-detail"});
+    var total = history.length;
+    var present = history.filter(function(a){ return a.status==="حاضر" || a.status==="متأخر"; }).length;
+    var pct = total ? Math.round(present/total*100) : 0;
+    wrap.appendChild(el("div",{class:"detail-grid"},[
+      detailField("عدد الجلسات المسجّلة", String(total)),
+      detailField("نسبة الحضور", total ? (pct+"%") : "لا يوجد سجل بعد"),
+      detailField("الموضع الحالي", s.position)
+    ]));
+    if(!history.length){
+      wrap.appendChild(el("div",{class:"empty-note", text:"لا يوجد سجل حضور لهذا الطالب بعد."}));
+      return wrap;
+    }
+    var table = el("table",{class:"history"});
+    var thead = el("tr",{},[
+      el("th",{text:"التاريخ"}), el("th",{text:"الحالة"}), el("th",{text:"حفظ جديد"}),
+      el("th",{text:"مراجعة"}), el("th",{text:"التقييم"}), el("th",{text:"ملاحظة"})
+    ]);
+    table.appendChild(thead);
+    history.forEach(function(a){
+      table.appendChild(el("tr",{},[
+        el("td",{text:fmtDateLong(a.date)}),
+        el("td",{class:"status-"+a.status, text:a.status}),
+        el("td",{text:a.hifdh||"—"}),
+        el("td",{text:a.muraja||"—"}),
+        el("td",{text:a.rating||"—"}),
+        el("td",{text:a.notes||"—"})
+      ]));
+    });
+    wrap.appendChild(table);
+    return wrap;
+  }
+
+  /* ================= WEEKLY REPORT VIEW ================= */
+  function renderWeeklyReport(){
+    var from = document.getElementById("weekFrom").value;
+    var to = document.getElementById("weekTo").value;
+    var statsWrap = document.getElementById("weeklyStats");
+    var table = document.getElementById("weeklyTable");
+    statsWrap.innerHTML = "";
+    table.innerHTML = "";
+
+    if(!from || !to){
+      document.getElementById("weeklySub").textContent = "يرجى تحديد بداية ونهاية الفترة أعلاه.";
+      return;
+    }
+    document.getElementById("weeklySub").textContent =
+      "من " + fmtDateLong(from) + " إلى " + fmtDateLong(to);
+
+    var records = Object.values(state.attendance).filter(function(a){
+      return a.date && a.date>=from && a.date<=to;
+    });
+    var sessionDates = {};
+    records.forEach(function(a){ sessionDates[a.date] = true; });
+    var sessionCount = Object.keys(sessionDates).length;
+    var totalPresent = records.filter(function(a){ return a.status==="حاضر" || a.status==="متأخر"; }).length;
+    var overallPct = records.length ? Math.round(totalPresent/records.length*100) : 0;
+
+    statsWrap.appendChild(statTile("عدد الأيام المسجَّلة", String(sessionCount)));
+    statsWrap.appendChild(statTile("نسبة الحضور الإجمالية", records.length ? (overallPct+"%") : "لا يوجد سجل",
+      !records.length ? "" : (overallPct>=80 ? "good" : (overallPct>=50 ? "warn" : "danger"))));
+    statsWrap.appendChild(statTile("عدد الطلاب النشطين", String(activeStudents().length)));
+
+    table.appendChild(el("tr",{},[
+      el("th",{text:"الطالب"}), el("th",{text:"حاضر"}), el("th",{text:"متأخر"}),
+      el("th",{text:"مستأذن"}), el("th",{text:"غائب"}), el("th",{text:"نسبة الحضور"}),
+      el("th",{text:"حفظ جديد"}), el("th",{text:"مراجعة"})
+    ]));
+
+    var any = false;
+    allStudentsSorted().forEach(function(s){
+      var recs = records.filter(function(a){ return a.studentId===s.id; });
+      if(!recs.length) return;
+      any = true;
+      var counts = {"حاضر":0,"متأخر":0,"مستأذن":0,"غائب":0};
+      recs.forEach(function(a){ if(counts.hasOwnProperty(a.status)) counts[a.status]++; });
+      var presentN = counts["حاضر"] + counts["متأخر"];
+      var pct = recs.length ? Math.round(presentN/recs.length*100) : 0;
+      var hifdhList = recs.filter(function(a){ return a.hifdh; }).map(function(a){ return a.hifdh; });
+      var murajaList = recs.filter(function(a){ return a.muraja; }).map(function(a){ return a.muraja; });
+      table.appendChild(el("tr",{},[
+        el("td",{text:s.name}),
+        el("td",{text:String(counts["حاضر"])}),
+        el("td",{text:String(counts["متأخر"])}),
+        el("td",{text:String(counts["مستأذن"])}),
+        el("td",{text:String(counts["غائب"])}),
+        el("td",{class: pct>=80 ? "status-حاضر" : (pct<50 ? "status-غائب" : ""), text:pct+"%"}),
+        el("td",{text: hifdhList.length ? hifdhList.join(" / ") : "—"}),
+        el("td",{text: murajaList.length ? murajaList.join(" / ") : "—"})
+      ]));
+    });
+
+    if(!any){
+      table.appendChild(el("tr",{},[el("td",{colspan:"8", class:"empty-note", text:"لا يوجد أي سجل حضور خلال هذه الفترة."})]));
+    }
+  }
+
+  function renderStudentsView(){
+    var wrap = document.getElementById("studentList");
+    wrap.innerHTML = "";
+    var list = filteredStudents();
+    document.getElementById("studentsSub").textContent = allStudentsSorted().length + " طالب مسجّل";
+    if(!list.length){
+      wrap.appendChild(el("div",{class:"empty-note", text:"لا يوجد طلاب بعد — اضغط «+ إضافة طالب»."}));
+      return;
+    }
+    list.forEach(function(s){ wrap.appendChild(buildStudentCard(s, false)); });
+  }
+
+  function renderReportsView(){
+    var wrap = document.getElementById("reportList");
+    wrap.innerHTML = "";
+    var list = allStudentsSorted();
+    if(state.reportSearch){
+      var q = state.reportSearch;
+      list = list.filter(function(s){ return (s.name||"").toLowerCase().indexOf(q)>-1; });
+    }
+    if(!list.length){
+      wrap.appendChild(el("div",{class:"empty-note", text:"لا يوجد طلاب بعد."}));
+      return;
+    }
+    list.forEach(function(s){ wrap.appendChild(buildStudentCard(s, true)); });
+  }
+
+  document.getElementById("studentSearch").addEventListener("input", function(){
+    state.studentSearch = this.value.trim().toLowerCase();
+    renderStudentsView();
+  });
+  document.getElementById("reportSearch").addEventListener("input", function(){
+    state.reportSearch = this.value.trim().toLowerCase();
+    renderReportsView();
+  });
+  document.getElementById("surahSearch").addEventListener("input", function(){
+    renderSurahIndex(this.value.trim());
+  });
+  document.getElementById("weekFrom").addEventListener("change", renderWeeklyReport);
+  document.getElementById("weekTo").addEventListener("change", renderWeeklyReport);
+  document.getElementById("btnThisWeek").addEventListener("click", function(){
+    var r = currentWeekRange();
+    document.getElementById("weekFrom").value = r.from;
+    document.getElementById("weekTo").value = r.to;
+    renderWeeklyReport();
+  });
+
+  /* ---------------- student modal ---------------- */
+  var studentOverlay = document.getElementById("studentOverlay");
+  var studentForm = document.getElementById("studentForm");
+  var studentMsg = document.getElementById("studentMsg");
+
+  function resetStudentForm(){
+    studentForm.reset();
+    document.getElementById("studentModalTitle").textContent = "إضافة طالب جديد";
+    document.getElementById("studentSaveBtn").textContent = "حفظ";
+    document.getElementById("studentDeleteBtn").hidden = true;
+    document.getElementById("sActive").checked = true;
+    studentMsg.textContent = "";
+    state.editingStudentId = null;
+  }
+
+  document.getElementById("btnAddStudent").addEventListener("click", function(){
+    resetStudentForm();
+    studentOverlay.hidden = false;
+  });
+
+  function openEditStudentModal(id){
+    var s = state.students[id];
+    if(!s) return;
+    resetStudentForm();
+    state.editingStudentId = id;
+    document.getElementById("studentModalTitle").textContent = "تعديل بيانات الطالب";
+    document.getElementById("studentSaveBtn").textContent = "حفظ التعديلات";
+    document.getElementById("studentDeleteBtn").hidden = false;
+    document.getElementById("sName").value = s.name || "";
+    document.getElementById("sPhone").value = s.phone || "";
+    document.getElementById("sGuardianPhone").value = s.guardianPhone || "";
+    document.getElementById("sLevel").value = s.level || "";
+    document.getElementById("sJoinDate").value = s.joinDate || "";
+    document.getElementById("sPosition").value = s.position || "";
+    document.getElementById("sNotes").value = s.notes || "";
+    document.getElementById("sActive").checked = s.active!==false;
+    studentOverlay.hidden = false;
+  }
+
+  document.getElementById("studentDeleteBtn").addEventListener("click", function(){
+    if(!state.editingStudentId || !state.db) return;
+    if(!confirm("حذف هذا الطالب نهائيًا؟ (سجل حضوره السابق يبقى محفوظًا)")) return;
+    state.db.collection("students").doc(state.editingStudentId).delete().then(function(){
+      studentOverlay.hidden = true;
+    }).catch(function(){ studentMsg.textContent = "تعذّر الحذف."; });
+  });
+
+  studentForm.addEventListener("submit", function(e){
+    e.preventDefault();
+    try{ submitStudentForm(); }
+    catch(err){ studentMsg.textContent = "حدث خطأ غير متوقع: " + (err && err.message ? err.message : String(err)); }
+  });
+
+  function submitStudentForm(){
+    if(!state.db){ studentMsg.textContent = "لا يوجد اتصال بقاعدة البيانات."; return; }
+    var name = document.getElementById("sName").value.trim();
+    if(!name){ studentMsg.textContent = "اكتب اسم الطالب."; return; }
+    var guardianPhone = document.getElementById("sGuardianPhone").value.trim();
+    if(!guardianPhone){ studentMsg.textContent = "جوال ولي الأمر مطلوب."; return; }
+    var data = {
+      name: name,
+      phone: document.getElementById("sPhone").value.trim() || null,
+      guardianPhone: guardianPhone,
+      level: document.getElementById("sLevel").value.trim() || null,
+      joinDate: document.getElementById("sJoinDate").value || null,
+      position: document.getElementById("sPosition").value.trim() || null,
+      notes: document.getElementById("sNotes").value.trim() || null,
+      active: document.getElementById("sActive").checked
+    };
+    document.getElementById("studentSaveBtn").disabled = true;
+    if(state.editingStudentId){
+      state.db.collection("students").doc(state.editingStudentId).update(data).then(function(){
+        studentOverlay.hidden = true;
+        document.getElementById("studentSaveBtn").disabled = false; // re-enable for the next add/edit
+      }).catch(function(err){
+        studentMsg.textContent = "تعذّر الحفظ" + (err && err.code ? " ("+err.code+")" : "") + " — حاول مرة أخرى.";
+        document.getElementById("studentSaveBtn").disabled = false;
+      });
+    } else {
+      data.createdAt = nowIso();
+      state.db.collection("students").add(data).then(function(){
+        studentOverlay.hidden = true;
+        document.getElementById("studentSaveBtn").disabled = false; // re-enable for the next add/edit
+      }).catch(function(err){
+        studentMsg.textContent = "تعذّر الحفظ" + (err && err.code ? " ("+err.code+")" : "") + " — حاول مرة أخرى.";
+        document.getElementById("studentSaveBtn").disabled = false;
+      });
+    }
+  }
+
+  document.querySelectorAll("[data-close]").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      document.getElementById(btn.getAttribute("data-close")).hidden = true;
+    });
+  });
+  document.querySelectorAll(".overlay").forEach(function(ov){
+    ov.addEventListener("click", function(e){ if(e.target===ov) ov.hidden = true; });
+  });
+
+  var meInput = document.getElementById("meName");
+  meInput.addEventListener("input", function(){ saveMe(this.value.trim()); });
+
+  /* ---------------- render dispatch ---------------- */
+  function renderAll(){
+    renderStats();
+    if(state.activeView==="today") renderTodayView();
+    else if(state.activeView==="students") renderStudentsView();
+    else if(state.activeView==="reports") renderReportsView();
+    else if(state.activeView==="weekly") renderWeeklyReport();
+    else if(state.activeView==="index") renderSurahIndex(document.getElementById("surahSearch").value.trim());
+  }
+
+  /* ---------------- data layer: Netlify Functions + Blobs ----------------
+     Same shape the page used inside Claude (collection(n).onSnapshot / doc(id).set|update|delete / add),
+     backed by netlify/functions/api.mjs. Other people's changes arrive by polling every 30 s while the
+     tab is visible; a collection only re-renders when its data actually changed. */
+  function api(method, path, body){
+    return fetch("/api/c/" + path, {
+      method: method,
+      headers: body ? {"Content-Type":"application/json"} : {},
+      body: body ? JSON.stringify(body) : undefined
+    }).then(function(r){
+      return r.json().catch(function(){ return {}; }).then(function(j){
+        if(!r.ok) throw {code:"server", message: j.error || ("HTTP " + r.status)};
+        return j;
+      });
+    }, function(){ throw {code:"network", message:"network"}; });
+  }
+  var netlifyDb = (function(){
+    var subs = {}, last = {}, timers = {};
+    function refresh(name){
+      return api("GET", encodeURIComponent(name)).then(function(j){
+        var docs = j.docs || [], key = JSON.stringify(docs);
+        if(last[name] === key) return;
+        last[name] = key;
+        var snap = { docs: docs.map(function(d){ return { id:d.id, data:function(){ return d.data; } }; }) };
+        document.getElementById("connNote").style.display = "none";
+        (subs[name]||[]).forEach(function(s){ s.cb(snap); });
+      }).catch(function(e){ (subs[name]||[]).forEach(function(s){ if(s.err) s.err(e); }); });
+    }
+    function soon(name){ clearTimeout(timers[name]); timers[name] = setTimeout(function(){ refresh(name); }, 250); }
+    setInterval(function(){ if(document.visibilityState === "visible") Object.keys(subs).forEach(refresh); }, 30000);
+    document.addEventListener("visibilitychange", function(){ if(document.visibilityState === "visible") Object.keys(subs).forEach(refresh); });
+    return {
+      collection: function(name){
+        var p = encodeURIComponent(name);
+        return {
+          onSnapshot: function(cb, err){ (subs[name] = subs[name] || []).push({cb:cb, err:err}); refresh(name); return function(){}; },
+          doc: function(id){
+            var dp = p + "/" + encodeURIComponent(id);
+            return {
+              set: function(d){ return api("PUT", dp, d).then(function(){ soon(name); }); },
+              update: function(d){ return api("PATCH", dp, d).then(function(){ soon(name); }); },
+              delete: function(){ return api("DELETE", dp).then(function(){ soon(name); }); }
+            };
+          },
+          add: function(d){ return api("POST", p, d).then(function(r){ soon(name); return {id:r.id}; }); }
+        };
+      }
+    };
+  })();
+
+  /* ---------------- boot ---------------- */
+  function boot(){
+    loadMe();
+    meInput.value = state.meName;
+    loadDraftForDate();
+    buildSurahDatalist();
+    renderSurahIndex("");
+    var wr = currentWeekRange();
+    document.getElementById("weekFrom").value = wr.from;
+    document.getElementById("weekTo").value = wr.to;
+
+    Promise.resolve(netlifyDb).then(function(db){
+      if(!db){ document.getElementById("connNote").style.display = "block"; return; }
+      state.db = db;
+      db.collection("students").onSnapshot(function(snap){
+        var map = {};
+        snap.docs.forEach(function(d){ map[d.id] = Object.assign({id:d.id}, d.data()); });
+        state.students = map;
+        loadDraftForDate();
+        renderAll();
+      }, function(){ document.getElementById("connNote").style.display = "block"; });
+      db.collection("attendance").onSnapshot(function(snap){
+        var map = {};
+        snap.docs.forEach(function(d){ map[d.id] = Object.assign({id:d.id}, d.data()); });
+        state.attendance = map;
+        loadDraftForDate();
+        renderAll();
+      }, function(){ document.getElementById("connNote").style.display = "block"; });
+    }).catch(function(){
+      document.getElementById("connNote").style.display = "block";
+    });
+
+    renderAll();
+  }
+
+  if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
+  else boot();
+})();
+</script>
+</body>
+</html>

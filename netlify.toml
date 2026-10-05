@@ -1,0 +1,12 @@
+# حلقات جامع غرناطة — إعداد Netlify
+# الملفات مرفوعة في المستوى الأول من المستودع، وأمر البناء يرتّبها في مجلداتها قبل النشر.
+[build]
+  command = "mkdir -p public netlify/functions data && cp index.html public/index.html && cp api.mjs netlify/functions/api.mjs && cp seed.mjs data/seed.mjs"
+  publish = "public"
+  functions = "netlify/functions"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+[functions]
+  node_bundler = "esbuild"

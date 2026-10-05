@@ -1,0 +1,9 @@
+{
+  "name": "halaqat-gharnata",
+  "private": true,
+  "type": "module",
+  "description": "حلقات جامع غرناطة",
+  "dependencies": {
+    "@netlify/blobs": "10.7.13"
+  }
+}
